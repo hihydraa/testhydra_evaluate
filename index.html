@@ -69,7 +69,16 @@ function api(action, payload = {}) {
 
     const script = document.createElement('script');
 
+    const timer = setTimeout(() => {
+      reject(new Error(
+        'Apps Script ไม่ตอบกลับ กรุณาตรวจ Web App URL / สิทธิ์ Anyone with the link / Deploy New version'
+      ));
+      delete window[callbackName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }, 15000);
+
     window[callbackName] = function(data) {
+      clearTimeout(timer);
       resolve(data);
       delete window[callbackName];
       if (script.parentNode) script.parentNode.removeChild(script);
@@ -87,9 +96,10 @@ function api(action, payload = {}) {
       }
     });
 
-    script.src = `${WEB_APP_URL}?${params.toString()}`;
+    script.src = WEB_APP_URL + '?' + params.toString();
 
     script.onerror = function() {
+      clearTimeout(timer);
       reject(new Error('โหลดข้อมูลจาก Apps Script ไม่สำเร็จ'));
       delete window[callbackName];
       if (script.parentNode) script.parentNode.removeChild(script);
