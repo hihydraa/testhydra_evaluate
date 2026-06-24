@@ -4,9 +4,6 @@
   <meta charset="UTF-8">
   <title>K.C. HEART Evaluation</title>
 
-  <script src="https://apis.google.com/js/api.js"></script>
-  <script src="https://accounts.google.com/gsi/client"></script>
-
   <style>
     body { font-family: Arial, sans-serif; background:#f4f6f9; padding:24px; }
     .wrap { max-width:1100px; margin:auto; }
@@ -21,6 +18,7 @@
     button.gray { background:#777; }
     textarea { width:100%; min-height:55px; margin-top:10px; }
     .score label { margin-right:12px; }
+    .loading { text-align:center; padding:24px; color:#666; }
   </style>
 </head>
 
@@ -31,101 +29,70 @@
     <div>ผู้ประเมิน: สุชานรี กองพลพรหม</div>
   </div>
 
-  <div class="card">
-    <button onclick="login()">เข้าสู่ระบบ Google</button>
-  </div>
-
   <div id="app"></div>
 </div>
 
 <script>
-const SPREADSHEET_ID = '1eZAysnGnULf1qFLddnI80Hwo4UzmMuxZV3SNesO5A4w';
-
-const API_KEY = 'ใส่_API_KEY';
-const CLIENT_ID = 'ใส่_CLIENT_ID';
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzt-pb7RF3pa3YD7xXDitYZeEPYJgrPTDsm8rVd-zUsH4HCpZkI2o2NAEpIWA-kkwjEgw/exec';
 
 const EVALUATOR_NAME = 'สุชานรี กองพลพรหม';
-const RESULT_SHEET = 'ผลการประเมิน';
 
-const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
-
-let tokenClient;
 let employees = [];
 let selectedEmployee = null;
 let questions = [];
 let scoreGuide = [];
 
-function init() {
-  gapi.load('client', async () => {
-    await gapi.client.init({
-      apiKey: API_KEY,
-      discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
-    });
-  });
+window.onload = async function () {
+  await loadData();
+};
 
-  tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID,
-    scope: SCOPES,
-    callback: async () => {
-      await ensureResultSheet();
-      await loadData();
-    }
-  });
+function showLoading(text) {
+  document.getElementById('app').innerHTML = `<div class="card loading">${text}</div>`;
 }
 
-function login() {
-  tokenClient.requestAccessToken();
+function showError(error) {
+  document.getElementById('app').innerHTML = `
+    <div class="card">
+      <h3>เกิดข้อผิดพลาด</h3>
+      <div>${error}</div>
+      <br>
+      <button onclick="loadData()">ลองใหม่</button>
+    </div>
+  `;
 }
 
-async function readRange(range) {
-  const res = await gapi.client.sheets.spreadsheets.values.get({
-    spreadsheetId: SPREADSHEET_ID,
-    range
+async function api(action, payload = {}) {
+  const res = await fetch(WEB_APP_URL, {
+    method: 'POST',
+    body: JSON.stringify({
+      action,
+      ...payload
+    })
   });
-  return res.result.values || [];
+
+  return await res.json();
 }
 
 async function loadData() {
-  const assessor = await readRange('ผู้ประเมิน!A:F');
-  const result = await readRange(`${RESULT_SHEET}!A:N`);
-  scoreGuide = await readRange('คะแนน!A:C');
+  try {
+    showLoading('กำลังโหลดรายชื่อพนักงานที่รอประเมิน...');
 
-  const evaluated = new Set();
+    const result = await api('init', {
+      evaluatorName: EVALUATOR_NAME
+    });
 
-  result.slice(1).forEach(r => {
-    const evaluator = r[1];
-    const employee = r[3];
-    const position = r[4];
-    const bu = r[5];
-    evaluated.add(`${evaluator}|${employee}|${position}|${bu}`);
-  });
-
-  employees = [];
-
-  assessor.slice(1).forEach(r => {
-    const evaluator = r[1];
-    const evaluatorPosition = r[2];
-    const bu = r[3];
-    const employee = r[4];
-    const employeePosition = r[5];
-
-    if (!employee) return;
-    if (evaluator !== EVALUATOR_NAME) return;
-
-    const key = `${evaluator}|${employee}|${employeePosition}|${bu}`;
-
-    if (!evaluated.has(key)) {
-      employees.push({
-        evaluator,
-        evaluatorPosition,
-        bu,
-        employee,
-        employeePosition
-      });
+    if (!result.success) {
+      throw new Error(result.message || 'โหลดข้อมูลไม่สำเร็จ');
     }
-  });
 
-  renderEmployeeList();
+    employees = result.employees || [];
+    scoreGuide = result.scoreGuide || [];
+
+    renderEmployeeList();
+
+  } catch (err) {
+    showError(err.message || err);
+  }
 }
 
 function renderEmployeeList() {
@@ -152,32 +119,32 @@ function renderEmployeeList() {
 }
 
 async function openForm(index) {
-  selectedEmployee = employees[index];
+  try {
+    selectedEmployee = employees[index];
+    showLoading('กำลังโหลดแบบประเมิน...');
 
-  const data = await readRange(`${selectedEmployee.bu}!A:G`);
+    const result = await api('getForm', {
+      employeeData: selectedEmployee
+    });
 
-  questions = data.slice(4)
-    .filter(r => r[4])
-    .filter(r => r[1] === selectedEmployee.employeePosition)
-    .map(r => ({
-      no: r[0],
-      position: r[1],
-      jdGroup: r[2],
-      coreValue: r[3],
-      checklist: r[4],
-      evidence: r[5],
-      method: r[6]
-    }));
+    if (!result.success) {
+      throw new Error(result.message || 'โหลดแบบประเมินไม่สำเร็จ');
+    }
 
-  renderForm();
+    questions = result.questions || [];
+    renderForm();
+
+  } catch (err) {
+    showError(err.message || err);
+  }
 }
 
 function renderForm() {
   const app = document.getElementById('app');
 
   let guide = `<div class="card"><b>เกณฑ์การให้คะแนน</b><br>`;
-  scoreGuide.slice(1).forEach(r => {
-    if (r[0]) guide += `${r[0]} = ${r[1]} : ${r[2]}<br>`;
+  scoreGuide.forEach(g => {
+    guide += `${g.score} = ${g.meaning} : ${g.description}<br>`;
   });
   guide += `</div>`;
 
@@ -233,97 +200,53 @@ function renderForm() {
 }
 
 async function submitEvaluation() {
-  const rows = [];
-  const evaluationId = crypto.randomUUID();
-  const now = new Date().toLocaleString('th-TH');
+  try {
+    const answers = [];
 
-  for (let i = 0; i < questions.length; i++) {
-    const checked = document.querySelector(`input[name="score_${i}"]:checked`);
+    for (let i = 0; i < questions.length; i++) {
+      const checked = document.querySelector(`input[name="score_${i}"]:checked`);
 
-    if (!checked) {
-      alert(`กรุณาให้คะแนนข้อที่ ${i + 1}`);
-      return;
+      if (!checked) {
+        alert(`กรุณาให้คะแนนข้อที่ ${i + 1}`);
+        return;
+      }
+
+      const q = questions[i];
+
+      answers.push({
+        ...q,
+        score: checked.value,
+        note: document.getElementById(`note_${i}`).value
+      });
     }
 
-    const q = questions[i];
+    const payload = {
+      evaluator: selectedEmployee.evaluator,
+      evaluatorPosition: selectedEmployee.evaluatorPosition,
+      employee: selectedEmployee.employee,
+      employeePosition: selectedEmployee.employeePosition,
+      bu: selectedEmployee.bu,
+      answers
+    };
 
-    rows.push([
-      evaluationId,
-      selectedEmployee.evaluator,
-      selectedEmployee.evaluatorPosition,
-      selectedEmployee.employee,
-      selectedEmployee.employeePosition,
-      selectedEmployee.bu,
-      q.no,
-      q.coreValue,
-      q.checklist,
-      q.evidence || '',
-      q.method || '',
-      checked.value,
-      document.getElementById(`note_${i}`).value,
-      now
-    ]);
-  }
+    showLoading('กำลังบันทึกผลการประเมิน...');
 
-  await gapi.client.sheets.spreadsheets.values.append({
-    spreadsheetId: SPREADSHEET_ID,
-    range: `${RESULT_SHEET}!A:N`,
-    valueInputOption: 'USER_ENTERED',
-    insertDataOption: 'INSERT_ROWS',
-    resource: { values: rows }
-  });
-
-  alert('บันทึกผลการประเมินเรียบร้อยแล้ว');
-
-  await loadData();
-}
-
-async function ensureResultSheet() {
-  const meta = await gapi.client.sheets.spreadsheets.get({
-    spreadsheetId: SPREADSHEET_ID
-  });
-
-  const exists = meta.result.sheets.some(s => s.properties.title === RESULT_SHEET);
-
-  if (!exists) {
-    await gapi.client.sheets.spreadsheets.batchUpdate({
-      spreadsheetId: SPREADSHEET_ID,
-      resource: {
-        requests: [{
-          addSheet: {
-            properties: { title: RESULT_SHEET }
-          }
-        }]
-      }
+    const result = await api('submit', {
+      payload
     });
 
-    await gapi.client.sheets.spreadsheets.values.update({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${RESULT_SHEET}!A1:N1`,
-      valueInputOption: 'USER_ENTERED',
-      resource: {
-        values: [[
-          'Evaluation ID',
-          'ผู้ประเมิน',
-          'ตำแหน่ง_ผู้ประเมิน',
-          'ผู้รับประเมิน',
-          'ตำแหน่ง_ผู้รับประเมิน',
-          'สังกัด',
-          'No.',
-          'Core Value',
-          'รายการตรวจสอบพฤติกรรม',
-          'หลักฐานที่ใช้ตรวจ',
-          'วิธีตรวจสอบ',
-          'คะแนน',
-          'หมายเหตุ',
-          'วันที่บันทึก'
-        ]]
-      }
-    });
+    if (!result.success) {
+      throw new Error(result.message || 'บันทึกไม่สำเร็จ');
+    }
+
+    alert('บันทึกผลการประเมินเรียบร้อยแล้ว');
+
+    await loadData();
+
+  } catch (err) {
+    showError(err.message || err);
   }
 }
-
-init();
 </script>
 </body>
 </html>
