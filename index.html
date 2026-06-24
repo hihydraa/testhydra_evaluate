@@ -16,6 +16,7 @@
     .meta { color:#666; font-size:13px; margin-top:8px; line-height:1.5; }
     button { background:#173b6c; color:white; border:0; padding:12px 18px; border-radius:10px; cursor:pointer; }
     button.gray { background:#777; }
+    button:disabled { background:#aaa; cursor:not-allowed; }
     textarea { width:100%; min-height:55px; margin-top:10px; box-sizing:border-box; }
     .score label { margin-right:12px; display:inline-block; margin-top:10px; }
     .loading { text-align:center; padding:24px; color:#666; }
@@ -33,13 +34,14 @@
 </div>
 
 <script>
-const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwVOqA_YJ42S7cXs-hYlLX9cgWEalCk7fHDjACCYpCjOAt58EHM9JQRzL2E5-LAUE68Aw/exec';
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby-T2AJE7CFzCAuZgGqo_cIHdkmoW7HGocKNyH6xvyTUKg4fZ5ulNhBTX-br4WMWOc4uQ/exec';
 const EVALUATOR_NAME = 'สุชานรี กองพลพรหม';
 
 let employees = [];
 let selectedEmployee = null;
 let questions = [];
 let scoreGuide = [];
+let submitting = false;
 
 window.onload = async function () {
   await loadData();
@@ -65,10 +67,12 @@ function api(action, payload = {}) {
     const callbackName =
       'jsonpCallback_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
 
+    const script = document.createElement('script');
+
     window[callbackName] = function(data) {
       resolve(data);
       delete window[callbackName];
-      if (script && script.parentNode) script.parentNode.removeChild(script);
+      if (script.parentNode) script.parentNode.removeChild(script);
     };
 
     const params = new URLSearchParams();
@@ -83,17 +87,32 @@ function api(action, payload = {}) {
       }
     });
 
-    const script = document.createElement('script');
     script.src = `${WEB_APP_URL}?${params.toString()}`;
 
     script.onerror = function() {
       reject(new Error('โหลดข้อมูลจาก Apps Script ไม่สำเร็จ'));
       delete window[callbackName];
-      if (script && script.parentNode) script.parentNode.removeChild(script);
+      if (script.parentNode) script.parentNode.removeChild(script);
     };
 
     document.body.appendChild(script);
   });
+}
+
+async function apiPost(action, payload = {}) {
+  await fetch(WEB_APP_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    body: JSON.stringify({
+      action,
+      ...payload
+    })
+  });
+
+  return {
+    success: true,
+    message: 'บันทึกผลการประเมินเรียบร้อยแล้ว'
+  };
 }
 
 async function loadData() {
@@ -216,13 +235,15 @@ function renderForm() {
 
   html += `
     <button class="gray" onclick="renderEmployeeList()">กลับ</button>
-    <button onclick="submitEvaluation()">ส่งผลประเมิน</button>
+    <button id="submitBtn" onclick="submitEvaluation()">ส่งผลประเมิน</button>
   `;
 
   app.innerHTML = html;
 }
 
 async function submitEvaluation() {
+  if (submitting) return;
+
   try {
     const answers = [];
 
@@ -252,21 +273,21 @@ async function submitEvaluation() {
       answers
     };
 
+    submitting = true;
+    const btn = document.getElementById('submitBtn');
+    if (btn) btn.disabled = true;
+
     showLoading('กำลังบันทึกผลการประเมิน...');
 
-    const result = await api('submit', {
-      payload
-    });
-
-    if (!result.success) {
-      throw new Error(result.message || 'บันทึกไม่สำเร็จ');
-    }
+    await apiPost('submit', { payload });
 
     alert('บันทึกผลการประเมินเรียบร้อยแล้ว');
 
+    submitting = false;
     await loadData();
 
   } catch (err) {
+    submitting = false;
     showError(err.message || err);
   }
 }
