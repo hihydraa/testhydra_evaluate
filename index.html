@@ -7,361 +7,234 @@
 
   <style>
     :root {
-      --blue: #173b6c;
-      --blue2: #244a83;
-      --bg: #f4f6f9;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --card: #ffffff;
-      --line: #e5e7eb;
-
-      --s5: #16a34a;
-      --s4: #65a30d;
-      --s3: #d97706;
-      --s2: #ea580c;
-      --s1: #dc2626;
+      --blue:#173b6c; --blue2:#244a83; --text:#1f2937; --muted:#6b7280;
+      --card:#ffffff; --line:#e5e7eb;
+      --s5:#16a34a; --s4:#65a30d; --s3:#d97706; --s2:#ea580c; --s1:#dc2626;
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing:border-box; }
 
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
-      color: var(--text);
-      padding: 24px;
+      margin:0; font-family:Arial,sans-serif;
+      background:linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%);
+      color:var(--text); padding:24px;
     }
 
-    .wrap {
-      max-width: 1120px;
-      margin: auto;
-    }
+    .wrap { max-width:1120px; margin:auto; }
 
     .head {
-      background: linear-gradient(135deg, var(--blue), var(--blue2));
-      color: white;
-      padding: 28px;
-      border-radius: 22px;
-      box-shadow: 0 12px 28px rgba(23,59,108,.22);
-      margin-bottom: 18px;
+      background:linear-gradient(135deg,var(--blue),var(--blue2));
+      color:white; padding:28px; border-radius:22px;
+      box-shadow:0 12px 28px rgba(23,59,108,.22); margin-bottom:18px;
     }
 
-    .head h2 {
-      margin: 0 0 8px;
-      font-size: 28px;
-      letter-spacing: .2px;
-    }
-
-    .head div {
-      opacity: .95;
-      font-weight: 600;
-    }
+    .head h2 { margin:0 0 8px; font-size:28px; }
+    .head div { opacity:.95; font-weight:600; }
 
     .card {
-      background: var(--card);
-      padding: 20px;
-      border-radius: 18px;
-      margin: 16px 0;
-      box-shadow: 0 8px 22px rgba(15,23,42,.08);
-      border: 1px solid rgba(226,232,240,.9);
+      background:var(--card); padding:20px; border-radius:18px; margin:16px 0;
+      box-shadow:0 8px 22px rgba(15,23,42,.08);
+      border:1px solid rgba(226,232,240,.9);
     }
 
-    .section-title {
-      font-size: 20px;
-      margin: 0 0 14px;
-      color: var(--blue);
-    }
+    .section-title { font-size:20px; margin:0 0 14px; color:var(--blue); }
 
     .emp {
-      cursor: pointer;
-      border-left: 7px solid var(--blue);
-      transition: .18s ease;
+      cursor:pointer; border-left:7px solid var(--blue); transition:.18s ease;
     }
 
     .emp:hover {
-      transform: translateY(-2px);
-      background: #f1f7ff;
-      box-shadow: 0 12px 28px rgba(23,59,108,.14);
+      transform:translateY(-2px); background:#f1f7ff;
+      box-shadow:0 12px 28px rgba(23,59,108,.14);
     }
 
-    .employee-name {
-      margin: 0 0 8px;
-      font-size: 21px;
-      color: var(--blue);
-    }
+    .employee-name { margin:0 0 8px; font-size:21px; color:var(--blue); }
 
     .info-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      display:grid; grid-template-columns:repeat(3,1fr); gap:12px;
     }
 
     .info-box {
-      background: #f8fafc;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 12px;
+      background:#f8fafc; border:1px solid var(--line);
+      border-radius:14px; padding:12px;
     }
 
-    .info-label {
-      color: var(--muted);
-      font-size: 13px;
-      margin-bottom: 4px;
-    }
-
-    .info-value {
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .guide-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
+    .info-label { color:var(--muted); font-size:13px; margin-bottom:4px; }
+    .info-value { font-weight:800; color:var(--text); }
 
     .score-visual {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 10px;
-  overflow: visible;
-}
-
-.score-guide {
-  border-radius: 16px;
-  padding: 14px;
-  color: #111827;
-  min-height: 150px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  box-shadow: 0 8px 16px rgba(15,23,42,.10);
-  overflow: hidden;
-  word-break: break-word;
-}
-
-.score-guide .num {
-  font-size: 30px;
-  font-weight: 900;
-  line-height: 1;
-  margin-bottom: 8px;
-}
-
-.score-guide .name {
-  font-weight: 900;
-  margin: 0 0 8px;
-  font-size: 15px;
-  line-height: 1.35;
-}
-
-.score-guide .desc {
-  font-size: 12px;
-  line-height: 1.45;
-  opacity: 1;
-}
-
-.s5 { background: #dcfce7; border: 2px solid var(--s5); }
-.s4 { background: #ecfccb; border: 2px solid var(--s4); }
-.s3 { background: #fef3c7; border: 2px solid var(--s3); }
-.s2 { background: #ffedd5; border: 2px solid var(--s2); }
-.s1 { background: #fee2e2; border: 2px solid var(--s1); }
-
-    .score-guide .num {
-      font-size: 30px;
-      font-weight: 800;
-      line-height: 1;
+      display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px;
     }
 
-    .score-guide .name {
-      font-weight: 800;
-      margin: 8px 0 4px;
+    .score-guide {
+      border-radius:16px; padding:14px; color:#111827; min-height:150px;
+      display:flex; flex-direction:column; justify-content:flex-start;
+      box-shadow:0 8px 16px rgba(15,23,42,.10);
+      overflow:hidden; word-break:break-word;
     }
 
-    .score-guide .desc {
-      font-size: 13px;
-      line-height: 1.45;
-      opacity: .96;
-    }
+    .score-guide .num { font-size:30px; font-weight:900; line-height:1; margin-bottom:8px; }
+    .score-guide .name { font-weight:900; margin:0 0 8px; font-size:15px; line-height:1.35; }
+    .score-guide .desc { font-size:12px; line-height:1.45; opacity:1; }
+
+    .s5 { background:#dcfce7; border:2px solid var(--s5); }
+    .s4 { background:#ecfccb; border:2px solid var(--s4); }
+    .s3 { background:#fef3c7; border:2px solid var(--s3); }
+    .s2 { background:#ffedd5; border:2px solid var(--s2); }
+    .s1 { background:#fee2e2; border:2px solid var(--s1); }
 
     .heart-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+      display:grid; grid-template-columns:repeat(2,1fr); gap:12px;
     }
 
     .heart-item {
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 14px;
-      background: #fbfdff;
+      border:1px solid var(--line); border-radius:16px; padding:14px; background:#fbfdff;
     }
 
-    .heart-name {
-      color: var(--blue);
-      font-weight: 800;
-      margin-bottom: 6px;
-    }
-
-    .heart-meaning {
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .heart-method {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.45;
-    }
+    .heart-name { color:var(--blue); font-weight:900; margin-bottom:6px; }
+    .heart-meaning { font-weight:800; margin-bottom:6px; }
+    .heart-method { color:var(--muted); font-size:14px; line-height:1.45; }
 
     .q {
-      background: white;
-      padding: 20px;
-      border-radius: 18px;
-      margin: 16px 0;
-      border: 1px solid var(--line);
-      box-shadow: 0 6px 18px rgba(15,23,42,.06);
+      background:white; padding:20px; border-radius:18px; margin:16px 0;
+      border:1px solid var(--line); box-shadow:0 6px 18px rgba(15,23,42,.06);
     }
 
     .q-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: flex-start;
-      margin-bottom: 12px;
+      display:flex; justify-content:space-between; gap:12px;
+      align-items:flex-start; margin-bottom:12px;
     }
 
     .core {
-      display: inline-flex;
-      align-items: center;
-      background: #eaf2ff;
-      color: var(--blue);
-      font-weight: 800;
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: 13px;
+      display:inline-flex; align-items:center; background:#eaf2ff; color:var(--blue);
+      font-weight:900; padding:7px 12px; border-radius:999px; font-size:13px;
     }
 
-    .q-no {
-      color: var(--muted);
-      font-weight: 700;
-      font-size: 13px;
-    }
-
-    .question-text {
-      font-size: 17px;
-      font-weight: 800;
-      line-height: 1.5;
-      margin-bottom: 12px;
-    }
+    .q-no { color:var(--muted); font-weight:800; font-size:13px; }
+    .question-text { font-size:17px; font-weight:900; line-height:1.5; margin-bottom:12px; }
 
     .meta {
-      font-size: 14px;
-      color: #4b5563;
-      margin-top: 10px;
-      line-height: 1.6;
-      background: #f8fafc;
-      padding: 12px;
-      border-radius: 14px;
-      border: 1px dashed #cbd5e1;
+      font-size:14px; color:#4b5563; margin-top:10px; line-height:1.6;
+      background:#f8fafc; padding:12px; border-radius:14px; border:1px dashed #cbd5e1;
     }
 
     .score {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-      margin-top: 16px;
+      display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-top:16px;
     }
 
-    .score-option {
-      cursor: pointer;
-    }
-
-    .score-option input {
-      display: none;
-    }
+    .score-option { cursor:pointer; }
+    .score-option input { display:none; }
 
     .score-pill {
-      display: block;
-      text-align: center;
-      padding: 12px 8px;
-      border-radius: 14px;
-      border: 2px solid var(--line);
-      background: #ffffff;
-      font-weight: 800;
-      transition: .18s ease;
+      display:block; text-align:center; padding:12px 8px; border-radius:14px;
+      border:2px solid var(--line); background:#fff; font-weight:900; transition:.18s ease;
     }
 
     .score-option input:checked + .score-pill {
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 18px rgba(15,23,42,.18);
+      color:white; transform:translateY(-2px); box-shadow:0 8px 18px rgba(15,23,42,.18);
     }
 
-    .score-option input[value="5"]:checked + .score-pill { background: var(--s5); border-color: var(--s5); }
-    .score-option input[value="4"]:checked + .score-pill { background: var(--s4); border-color: var(--s4); }
-    .score-option input[value="3"]:checked + .score-pill { background: var(--s3); border-color: var(--s3); }
-    .score-option input[value="2"]:checked + .score-pill { background: var(--s2); border-color: var(--s2); }
-    .score-option input[value="1"]:checked + .score-pill { background: var(--s1); border-color: var(--s1); }
+    .score-option input[value="5"]:checked + .score-pill { background:var(--s5); border-color:var(--s5); }
+    .score-option input[value="4"]:checked + .score-pill { background:var(--s4); border-color:var(--s4); }
+    .score-option input[value="3"]:checked + .score-pill { background:var(--s3); border-color:var(--s3); }
+    .score-option input[value="2"]:checked + .score-pill { background:var(--s2); border-color:var(--s2); }
+    .score-option input[value="1"]:checked + .score-pill { background:var(--s1); border-color:var(--s1); }
 
     textarea {
-      width: 100%;
-      min-height: 70px;
-      margin-top: 14px;
-      border-radius: 14px;
-      border: 1px solid #cbd5e1;
-      padding: 12px;
-      font-family: Arial, sans-serif;
-      resize: vertical;
-      outline: none;
+      width:100%; min-height:70px; margin-top:14px; border-radius:14px;
+      border:1px solid #cbd5e1; padding:12px; font-family:Arial,sans-serif;
+      resize:vertical; outline:none;
     }
 
     textarea:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(23,59,108,.12);
+      border-color:var(--blue); box-shadow:0 0 0 3px rgba(23,59,108,.12);
     }
 
     button {
-      background: var(--blue);
-      color: white;
-      border: 0;
-      padding: 13px 20px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: 800;
-      font-size: 15px;
-      box-shadow: 0 8px 18px rgba(23,59,108,.18);
+      background:var(--blue); color:white; border:0; padding:13px 20px;
+      border-radius:12px; cursor:pointer; font-weight:900; font-size:15px;
+      box-shadow:0 8px 18px rgba(23,59,108,.18);
     }
 
-    button.gray {
-      background: #64748b;
-    }
-
-    button:disabled {
-      background: #aaa;
-      cursor: not-allowed;
-    }
+    button.gray { background:#64748b; }
+    button:disabled { background:#aaa; cursor:not-allowed; }
 
     .action-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 18px;
+      display:flex; gap:10px; margin-top:18px; flex-wrap:wrap;
     }
 
     .loading {
-      text-align: center;
-      padding: 32px;
-      color: var(--muted);
-      font-weight: 700;
+      text-align:center; padding:32px; color:var(--muted); font-weight:800;
     }
 
-    @media (max-width: 800px) {
-      body { padding: 14px; }
-      .head { padding: 22px; border-radius: 18px; }
-      .head h2 { font-size: 22px; }
-      .score-visual { grid-template-columns: 1fr; }
-      .heart-grid { grid-template-columns: 1fr; }
-      .score { grid-template-columns: repeat(3, 1fr); }
-      .info-grid { grid-template-columns: 1fr; }
+    .result-grid {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:14px;
+    }
+
+    .result-card {
+      background:#f8fafc; border:1px solid var(--line);
+      border-radius:16px; padding:16px;
+    }
+
+    .result-title {
+      font-weight:900; color:var(--blue); margin-bottom:10px;
+    }
+
+    .result-sub {
+      color:var(--muted); font-size:13px; margin-top:8px;
+    }
+
+    .score-badge {
+      display:inline-flex; align-items:center; justify-content:center;
+      min-width:58px; padding:7px 12px; border-radius:999px;
+      font-weight:900; color:#111827;
+    }
+
+    .search-input {
+      width:100%; padding:13px 14px; border-radius:14px;
+      border:1px solid #cbd5e1; margin-bottom:14px; font-size:15px;
+    }
+
+    .table-wrap { overflow-x:auto; }
+
+    table {
+      width:100%; border-collapse:collapse; min-width:860px;
+    }
+
+    th, td {
+      padding:12px; border-bottom:1px solid var(--line);
+      text-align:left; vertical-align:top;
+    }
+
+    th {
+      background:#f1f5f9; color:var(--blue);
+    }
+
+    .core-score {
+      margin-bottom:6px; font-size:13px;
+    }
+
+    .tab-row {
+      display:flex; gap:10px; flex-wrap:wrap; margin:16px 0;
+    }
+
+    .tab-btn {
+      background:#eaf2ff; color:var(--blue); box-shadow:none;
+    }
+
+    .tab-btn.active {
+      background:var(--blue); color:white;
+    }
+
+    @media (max-width:800px) {
+      body { padding:14px; }
+      .head { padding:22px; border-radius:18px; }
+      .head h2 { font-size:22px; }
+      .score-visual { grid-template-columns:1fr; }
+      .heart-grid { grid-template-columns:1fr; }
+      .score { grid-template-columns:repeat(3,1fr); }
+      .info-grid { grid-template-columns:1fr; }
+      .result-grid { grid-template-columns:1fr; }
     }
   </style>
 </head>
@@ -378,48 +251,53 @@
 
 <script>
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby-T2AJE7CFzCAuZgGqo_cIHdkmoW7HGocKNyH6xvyTUKg4fZ5ulNhBTX-br4WMWOc4uQ/exec';
+
 const params = new URLSearchParams(window.location.search);
-const EVALUATOR_NAME =
-  params.get('evaluator') || 'สุชานรี กองพลพรหม';
-  document.addEventListener('DOMContentLoaded', function () {
-  document.getElementById('evaluatorHeader').innerText = 'ผู้ประเมิน: ' + EVALUATOR_NAME;
-});
+const EVALUATOR_NAME = params.get('evaluator') || 'สุชานรี กองพลพรหม';
 
 let employees = [];
 let selectedEmployee = null;
 let questions = [];
 let scoreGuide = [];
+let resultsSummary = null;
 let submitting = false;
 
 const defaultScoreGuide = [
-  { score: 5, meaning: 'ดีเยี่ยม / เป็นแบบอย่าง', description: 'ปฏิบัติสม่ำเสมอ มีหลักฐานชัดเจน และเป็นตัวอย่างให้ผู้อื่น' },
-  { score: 4, meaning: 'ดี / ผ่านมาตรฐาน', description: 'ปฏิบัติได้ดี มีหลักฐานสนับสนุน ไม่มีประเด็นสำคัญ' },
-  { score: 3, meaning: 'พอใช้ / เฝ้าระวัง', description: 'ปฏิบัติได้บางส่วน แต่ยังไม่สม่ำเสมอหรือหลักฐานไม่ครบ' },
-  { score: 2, meaning: 'ต้องปรับปรุง', description: 'พบข้อบกพร่องชัดเจน ต้องมีแผนแก้ไข' },
-  { score: 1, meaning: 'ไม่ปฏิบัติ / เสี่ยงสูง', description: 'ไม่พบการปฏิบัติ หรือพบพฤติกรรมขัดกับ Core Value' }
+  { score:5, meaning:'ดีเยี่ยม / เป็นแบบอย่าง', description:'ปฏิบัติสม่ำเสมอ มีหลักฐานชัดเจน และเป็นตัวอย่างให้ผู้อื่น' },
+  { score:4, meaning:'ดี / ผ่านมาตรฐาน', description:'ปฏิบัติได้ดี มีหลักฐานสนับสนุน ไม่มีประเด็นสำคัญ' },
+  { score:3, meaning:'พอใช้ / เฝ้าระวัง', description:'ปฏิบัติได้บางส่วน แต่ยังไม่สม่ำเสมอหรือหลักฐานไม่ครบ' },
+  { score:2, meaning:'ต้องปรับปรุง', description:'พบข้อบกพร่องชัดเจน ต้องมีแผนแก้ไข' },
+  { score:1, meaning:'ไม่ปฏิบัติ / เสี่ยงสูง', description:'ไม่พบการปฏิบัติ หรือพบพฤติกรรมขัดกับ Core Value' }
 ];
 
 const heartGuide = [
-  { name: 'Hospitality', meaning: 'บริการด้วยความจริงใจ', method: 'ดูวิธีสื่อสาร การรับฟัง การช่วยเหลือ และ Feedback' },
-  { name: 'Excellence', meaning: 'มุ่งมั่นสู่ความเป็นเลิศทุกด้าน', method: 'ดูความถูกต้อง มาตรฐาน รายละเอียด และการปรับปรุงงาน' },
-  { name: 'Accountability', meaning: 'รักษามาตรฐานสูงสุด', method: 'ดูงานค้าง การติดตาม การรายงาน และการรับผิดชอบข้อผิดพลาด' },
-  { name: 'Responsibility', meaning: 'รับผิดชอบผลลัพธ์', method: 'ดูวินัย ความปลอดภัย การรักษาความลับ และทรัพย์สินบริษัท' },
-  { name: 'Teamwork', meaning: 'ทำงานเป็นทีม', method: 'ดูการประสานงาน ช่วยเหลือทีม และงานข้ามฝ่าย' }
+  { name:'Hospitality', meaning:'บริการด้วยความจริงใจ', method:'ดูวิธีสื่อสาร การรับฟัง การช่วยเหลือ และ Feedback' },
+  { name:'Excellence', meaning:'มุ่งมั่นสู่ความเป็นเลิศทุกด้าน', method:'ดูความถูกต้อง มาตรฐาน รายละเอียด และการปรับปรุงงาน' },
+  { name:'Accountability', meaning:'รักษามาตรฐานสูงสุด', method:'ดูงานค้าง การติดตาม การรายงาน และการรับผิดชอบข้อผิดพลาด' },
+  { name:'Responsibility', meaning:'รับผิดชอบผลลัพธ์', method:'ดูวินัย ความปลอดภัย การรักษาความลับ และทรัพย์สินบริษัท' },
+  { name:'Teamwork', meaning:'ทำงานเป็นทีม', method:'ดูการประสานงาน ช่วยเหลือทีม และงานข้ามฝ่าย' }
 ];
 
 window.onload = async function () {
+  document.getElementById('evaluatorHeader').innerText = 'ผู้ประเมิน: ' + EVALUATOR_NAME;
   await loadData();
 };
 
+function esc(v) {
+  return String(v ?? '').replace(/[&<>"']/g, m => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;'
+  }[m]));
+}
+
 function showLoading(text) {
-  document.getElementById('app').innerHTML = `<div class="card loading">${text}</div>`;
+  document.getElementById('app').innerHTML = `<div class="card loading">${esc(text)}</div>`;
 }
 
 function showError(error) {
   document.getElementById('app').innerHTML = `
     <div class="card">
       <h3>เกิดข้อผิดพลาด</h3>
-      <div>${error}</div>
+      <div>${esc(error)}</div>
       <br>
       <button onclick="loadData()">ลองใหม่</button>
     </div>
@@ -428,9 +306,7 @@ function showError(error) {
 
 function api(action, payload = {}) {
   return new Promise((resolve, reject) => {
-    const callbackName =
-      'jsonpCallback_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
-
+    const callbackName = 'jsonpCallback_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
     const script = document.createElement('script');
 
     const timer = setTimeout(() => {
@@ -446,19 +322,19 @@ function api(action, payload = {}) {
       if (script.parentNode) script.parentNode.removeChild(script);
     };
 
-    const params = new URLSearchParams();
-    params.set('action', action);
-    params.set('callback', callbackName);
+    const queryParams = new URLSearchParams();
+    queryParams.set('action', action);
+    queryParams.set('callback', callbackName);
 
     Object.keys(payload).forEach(key => {
       if (typeof payload[key] === 'object') {
-        params.set(key, JSON.stringify(payload[key]));
+        queryParams.set(key, JSON.stringify(payload[key]));
       } else {
-        params.set(key, payload[key]);
+        queryParams.set(key, payload[key]);
       }
     });
 
-    script.src = WEB_APP_URL + '?' + params.toString();
+    script.src = WEB_APP_URL + '?' + queryParams.toString();
 
     script.onerror = function() {
       clearTimeout(timer);
@@ -473,27 +349,19 @@ function api(action, payload = {}) {
 
 async function apiPost(action, payload = {}) {
   await fetch(WEB_APP_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    body: JSON.stringify({
-      action,
-      ...payload
-    })
+    method:'POST',
+    mode:'no-cors',
+    body:JSON.stringify({ action, ...payload })
   });
 
-  return {
-    success: true,
-    message: 'บันทึกผลการประเมินเรียบร้อยแล้ว'
-  };
+  return { success:true, message:'บันทึกผลการประเมินเรียบร้อยแล้ว' };
 }
 
 async function loadData() {
   try {
-    showLoading('กำลังโหลดรายชื่อพนักงานที่รอประเมิน...');
+    showLoading('กำลังโหลดข้อมูล...');
 
-    const result = await api('init', {
-      evaluatorName: EVALUATOR_NAME
-    });
+    const result = await api('init', { evaluatorName:EVALUATOR_NAME });
 
     if (!result.success) {
       throw new Error(result.message || 'โหลดข้อมูลไม่สำเร็จ');
@@ -501,6 +369,12 @@ async function loadData() {
 
     employees = result.employees || [];
     scoreGuide = result.scoreGuide && result.scoreGuide.length ? result.scoreGuide : defaultScoreGuide;
+    resultsSummary = result.resultsSummary || {
+      overall:{ average:0, questionCount:0, employeeCount:0 },
+      byEmployee:[],
+      byPosition:[],
+      byBU:[]
+    };
 
     renderEmployeeList();
 
@@ -510,7 +384,7 @@ async function loadData() {
 }
 
 function renderGuideBoxes() {
-  const sortedScore = [...scoreGuide].sort((a, b) => Number(b.score) - Number(a.score));
+  const sortedScore = [...scoreGuide].sort((a,b) => Number(b.score) - Number(a.score));
 
   let scoreHtml = `
     <div class="card">
@@ -520,20 +394,17 @@ function renderGuideBoxes() {
 
   sortedScore.forEach(g => {
     scoreHtml += `
-      <div class="score-guide s${g.score}">
+      <div class="score-guide s${esc(g.score)}">
         <div>
-          <div class="num">${g.score}</div>
-          <div class="name">${g.meaning}</div>
+          <div class="num">${esc(g.score)}</div>
+          <div class="name">${esc(g.meaning)}</div>
         </div>
-        <div class="desc">${g.description}</div>
+        <div class="desc">${esc(g.description)}</div>
       </div>
     `;
   });
 
-  scoreHtml += `
-      </div>
-    </div>
-  `;
+  scoreHtml += `</div></div>`;
 
   let heartHtml = `
     <div class="card">
@@ -544,23 +415,22 @@ function renderGuideBoxes() {
   heartGuide.forEach(h => {
     heartHtml += `
       <div class="heart-item">
-        <div class="heart-name">${h.name}</div>
-        <div class="heart-meaning">${h.meaning}</div>
-        <div class="heart-method">${h.method}</div>
+        <div class="heart-name">${esc(h.name)}</div>
+        <div class="heart-meaning">${esc(h.meaning)}</div>
+        <div class="heart-method">${esc(h.method)}</div>
       </div>
     `;
   });
 
-  heartHtml += `
-      </div>
-    </div>
-  `;
+  heartHtml += `</div></div>`;
 
   return scoreHtml + heartHtml;
 }
 
 function renderEmployeeList() {
   const app = document.getElementById('app');
+  const evaluatedCount = resultsSummary?.overall?.employeeCount || 0;
+  const avg = resultsSummary?.overall?.average || 0;
 
   let html = `
     <div class="card">
@@ -568,16 +438,20 @@ function renderEmployeeList() {
       <div class="info-grid">
         <div class="info-box">
           <div class="info-label">ผู้ประเมิน</div>
-          <div class="info-value">${EVALUATOR_NAME}</div>
+          <div class="info-value">${esc(EVALUATOR_NAME)}</div>
         </div>
         <div class="info-box">
           <div class="info-label">จำนวนที่รอประเมิน</div>
           <div class="info-value">${employees.length} คน</div>
         </div>
         <div class="info-box">
-          <div class="info-label">สถานะ</div>
-          <div class="info-value">พร้อมประเมิน</div>
+          <div class="info-label">ประเมินแล้ว / คะแนนเฉลี่ย</div>
+          <div class="info-value">${evaluatedCount} คน / ${renderScoreBadge(avg)}</div>
         </div>
+      </div>
+
+      <div class="action-row">
+        <button onclick="renderResultsDashboard()">ดูผลคะแนนที่ประเมินแล้ว</button>
       </div>
     </div>
   `;
@@ -593,15 +467,15 @@ function renderEmployeeList() {
   employees.forEach((emp, i) => {
     html += `
       <div class="card emp" onclick="openForm(${i})">
-        <h3 class="employee-name">${emp.employee}</h3>
+        <h3 class="employee-name">${esc(emp.employee)}</h3>
         <div class="info-grid">
           <div class="info-box">
             <div class="info-label">ตำแหน่ง</div>
-            <div class="info-value">${emp.employeePosition}</div>
+            <div class="info-value">${esc(emp.employeePosition)}</div>
           </div>
           <div class="info-box">
             <div class="info-label">สังกัด</div>
-            <div class="info-value">${emp.bu}</div>
+            <div class="info-value">${esc(emp.bu)}</div>
           </div>
           <div class="info-box">
             <div class="info-label">สถานะ</div>
@@ -615,14 +489,155 @@ function renderEmployeeList() {
   app.innerHTML = html;
 }
 
+function scoreClass(score) {
+  score = Number(score);
+  if (score >= 4.5) return 's5';
+  if (score >= 3.5) return 's4';
+  if (score >= 2.5) return 's3';
+  if (score >= 1.5) return 's2';
+  return 's1';
+}
+
+function renderScoreBadge(score) {
+  const n = Number(score || 0).toFixed(2);
+  return `<span class="score-badge ${scoreClass(n)}">${n}</span>`;
+}
+
+function renderResultsDashboard() {
+  const data = resultsSummary || {
+    overall:{ average:0, employeeCount:0, questionCount:0 },
+    byEmployee:[],
+    byPosition:[],
+    byBU:[]
+  };
+
+  let html = `
+    <div class="card">
+      <h3 class="section-title">Dashboard คะแนนที่ประเมินแล้ว</h3>
+      <div class="info-grid">
+        <div class="info-box">
+          <div class="info-label">คะแนนเฉลี่ยรวม</div>
+          <div class="info-value">${renderScoreBadge(data.overall.average)}</div>
+        </div>
+        <div class="info-box">
+          <div class="info-label">จำนวนพนักงานที่ประเมินแล้ว</div>
+          <div class="info-value">${data.overall.employeeCount} คน</div>
+        </div>
+        <div class="info-box">
+          <div class="info-label">จำนวนข้อประเมินทั้งหมด</div>
+          <div class="info-value">${data.overall.questionCount} ข้อ</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="renderResultsDashboard()">ภาพรวม</button>
+      <button class="tab-btn" onclick="renderEmployeeList()">กลับไปรายชื่อรอประเมิน</button>
+    </div>
+
+    <div class="card">
+      <h3 class="section-title">ภาพรวมตาม BU</h3>
+      <div class="result-grid">
+        ${
+          data.byBU.length
+          ? data.byBU.map(b => `
+            <div class="result-card">
+              <div class="result-title">${esc(b.bu)}</div>
+              <div>${renderScoreBadge(b.average)}</div>
+              <div class="result-sub">พนักงาน ${b.employeeCount} คน / ${b.questionCount} ข้อ</div>
+            </div>
+          `).join('')
+          : '<div class="result-card">ยังไม่มีข้อมูล BU</div>'
+        }
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="section-title">Benchmark ตามตำแหน่ง</h3>
+      <div class="result-grid">
+        ${
+          data.byPosition.length
+          ? data.byPosition.map(p => `
+            <div class="result-card">
+              <div class="result-title">${esc(p.position)}</div>
+              <div>${renderScoreBadge(p.average)}</div>
+              <div class="result-sub">พนักงาน ${p.employeeCount} คน / ${p.questionCount} ข้อ</div>
+            </div>
+          `).join('')
+          : '<div class="result-card">ยังไม่มีข้อมูลตำแหน่ง</div>'
+        }
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="section-title">คะแนนรายบุคคล</h3>
+      <input class="search-input" id="resultSearch" placeholder="ค้นหาชื่อพนักงาน / ตำแหน่ง / BU" oninput="filterResultRows()">
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>พนักงาน</th>
+              <th>ตำแหน่ง</th>
+              <th>BU</th>
+              <th>คะแนนเฉลี่ย</th>
+              <th>จำนวนข้อ</th>
+              <th>Core Value</th>
+            </tr>
+          </thead>
+          <tbody id="resultRows">
+            ${renderResultRows(data.byEmployee)}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('app').innerHTML = html;
+}
+
+function renderResultRows(list) {
+  if (!list || !list.length) {
+    return `<tr><td colspan="6">ยังไม่มีข้อมูลการประเมิน</td></tr>`;
+  }
+
+  return list.map(emp => `
+    <tr class="result-row" data-search="${esc(`${emp.employee} ${emp.employeePosition} ${emp.bu}`.toLowerCase())}">
+      <td><b>${esc(emp.employee)}</b></td>
+      <td>${esc(emp.employeePosition)}</td>
+      <td>${esc(emp.bu)}</td>
+      <td>${renderScoreBadge(emp.average)}</td>
+      <td>${emp.count}</td>
+      <td>
+        ${
+          emp.core && emp.core.length
+          ? emp.core.map(c => `
+            <div class="core-score">
+              ${esc(c.coreValue)}: ${renderScoreBadge(c.average)}
+            </div>
+          `).join('')
+          : '-'
+        }
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterResultRows() {
+  const keyword = document.getElementById('resultSearch').value.toLowerCase().trim();
+  const rows = document.querySelectorAll('.result-row');
+
+  rows.forEach(row => {
+    row.style.display = row.dataset.search.includes(keyword) ? '' : 'none';
+  });
+}
+
 async function openForm(index) {
   try {
     selectedEmployee = employees[index];
     showLoading('กำลังโหลดแบบประเมิน...');
 
-    const result = await api('getForm', {
-      employeeData: selectedEmployee
-    });
+    const result = await api('getForm', { employeeData:selectedEmployee });
 
     if (!result.success) {
       throw new Error(result.message || 'โหลดแบบประเมินไม่สำเร็จ');
@@ -641,15 +656,15 @@ function renderForm() {
 
   let html = `
     <div class="card">
-      <h3 class="section-title">แบบประเมิน: ${selectedEmployee.employee}</h3>
+      <h3 class="section-title">แบบประเมิน: ${esc(selectedEmployee.employee)}</h3>
       <div class="info-grid">
         <div class="info-box">
           <div class="info-label">ตำแหน่ง</div>
-          <div class="info-value">${selectedEmployee.employeePosition}</div>
+          <div class="info-value">${esc(selectedEmployee.employeePosition)}</div>
         </div>
         <div class="info-box">
           <div class="info-label">สังกัด</div>
-          <div class="info-value">${selectedEmployee.bu}</div>
+          <div class="info-value">${esc(selectedEmployee.bu)}</div>
         </div>
         <div class="info-box">
           <div class="info-label">จำนวนข้อประเมิน</div>
@@ -663,7 +678,7 @@ function renderForm() {
 
   if (questions.length === 0) {
     html += `
-      <div class="card">ไม่พบคำถามของตำแหน่งนี้ในชีท ${selectedEmployee.bu}</div>
+      <div class="card">ไม่พบคำถามของตำแหน่งนี้ในชีท ${esc(selectedEmployee.bu)}</div>
       <div class="action-row">
         <button class="gray" onclick="renderEmployeeList()">กลับ</button>
       </div>
@@ -676,15 +691,15 @@ function renderForm() {
     html += `
       <div class="q">
         <div class="q-top">
-          <div class="core">${q.coreValue}</div>
+          <div class="core">${esc(q.coreValue)}</div>
           <div class="q-no">ข้อที่ ${i + 1}</div>
         </div>
 
-        <div class="question-text">${q.checklist}</div>
+        <div class="question-text">${esc(q.checklist)}</div>
 
         <div class="meta">
-          <b>หลักฐานที่ใช้ตรวจ:</b> ${q.evidence || '-'}<br>
-          <b>วิธีตรวจสอบ:</b> ${q.method || '-'}
+          <b>หลักฐานที่ใช้ตรวจ:</b> ${esc(q.evidence || '-')}<br>
+          <b>วิธีตรวจสอบ:</b> ${esc(q.method || '-')}
         </div>
 
         <div class="score">
@@ -729,17 +744,17 @@ async function submitEvaluation() {
 
       answers.push({
         ...q,
-        score: checked.value,
-        note: document.getElementById(`note_${i}`).value
+        score:checked.value,
+        note:document.getElementById(`note_${i}`).value
       });
     }
 
     const payload = {
-      evaluator: selectedEmployee.evaluator,
-      evaluatorPosition: selectedEmployee.evaluatorPosition,
-      employee: selectedEmployee.employee,
-      employeePosition: selectedEmployee.employeePosition,
-      bu: selectedEmployee.bu,
+      evaluator:selectedEmployee.evaluator,
+      evaluatorPosition:selectedEmployee.evaluatorPosition,
+      employee:selectedEmployee.employee,
+      employeePosition:selectedEmployee.employeePosition,
+      bu:selectedEmployee.bu,
       answers
     };
 
