@@ -1,295 +1,295 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <base target="_top">
   <meta charset="UTF-8">
-  <title>K.C. HEART Evaluation</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Chart + PDF -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
-    :root {
-      --blue:#173b6c;
-      --blue2:#244a83;
-      --bg:#f4f6f9;
-      --text:#1f2937;
-      --muted:#6b7280;
-      --card:#fff;
-      --line:#e5e7eb;
-      --s5:#16a34a;
-      --s4:#65a30d;
-      --s3:#d97706;
-      --s2:#ea580c;
-      --s1:#dc2626;
+    body {
+      font-family: Arial;
+      background: #f4f6f9;
+      padding: 20px;
     }
 
-    *{box-sizing:border-box}
-
-    body{
-      margin:0;
-      font-family:Arial;
-      background:linear-gradient(180deg,#f8fafc,#eef2f7);
-      padding:24px;
-      color:var(--text);
+    .card {
+      background: #fff;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
 
-    .wrap{max-width:1100px;margin:auto}
-
-    .head{
-      background:linear-gradient(135deg,var(--blue),var(--blue2));
-      color:#fff;
-      padding:24px;
-      border-radius:18px;
-      margin-bottom:16px;
+    button {
+      background: #173b6c;
+      color: white;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin: 5px;
     }
 
-    .card{
-      background:#fff;
-      padding:18px;
-      border-radius:16px;
-      margin:12px 0;
-      box-shadow:0 6px 18px rgba(0,0,0,.08);
+    .gray { background: #666; }
+
+    .employee {
+      cursor: pointer;
+      border-left: 5px solid #173b6c;
     }
 
-    .section-title{
-      color:var(--blue);
-      font-weight:900;
-      margin-bottom:12px;
-    }
-
-    .btn-row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin:12px 0;
-    }
-
-    button{
-      background:var(--blue);
-      color:#fff;
-      border:0;
-      padding:10px 14px;
-      border-radius:10px;
-      font-weight:800;
-      cursor:pointer;
-    }
-
-    button.gray{background:#64748b}
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:10px;
-    }
-
-    .box{
-      background:#f8fafc;
-      padding:12px;
-      border-radius:12px;
-      border:1px solid #e5e7eb;
-    }
-
-    .emp{cursor:pointer}
-    .emp:hover{background:#eef6ff}
-
-    .q{border:1px solid #eee;padding:12px;border-radius:12px;margin:10px 0}
-
-    canvas{max-width:100%}
-
-    @media(max-width:768px){
-      .grid{grid-template-columns:1fr}
+    .employee:hover {
+      background: #eef5ff;
     }
   </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
-<div class="wrap">
 
-  <div class="head">
-    <h2>K.C. HEART Evaluation System</h2>
-    <div>ผู้ประเมิน: สุชานรี กองพลพรหม</div>
-  </div>
-
-  <div class="btn-row">
-    <button onclick="renderEmployeeList()">📋 รายชื่อ</button>
-    <button onclick="loadDashboard()">📊 Dashboard</button>
-  </div>
-
-  <div id="app"></div>
-
-</div>
+<div id="app">Loading...</div>
 
 <script>
+
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby6NWH7qal1TvzcE4kK8D21ia_h3WWptA0oN5SXngb42IKfploqx4fmZpSKb829ZzdyRQ/exec";
 const EVALUATOR_NAME = "สุชานรี กองพลพรหม";
 
-let employees=[], questions=[], selected=null;
+let employees = [];
+let questions = [];
+let selected = null;
 
 // ================= API =================
-function api(action,payload={}){
-  return new Promise((resolve,reject)=>{
-    const cb="cb_"+Date.now();
-    window[cb]=d=>{resolve(d);delete window[cb];};
+function api(action, payload = {}) {
+  return new Promise((resolve) => {
+    const cb = "cb_" + Date.now();
 
-    const s=document.createElement("script");
-    const p=new URLSearchParams({action,callback:cb});
+    window[cb] = (res) => {
+      resolve(res);
+      delete window[cb];
+    };
 
-    Object.keys(payload).forEach(k=>{
-      p.append(k,typeof payload[k]==="object"?JSON.stringify(payload[k]):payload[k]);
+    const script = document.createElement("script");
+
+    const params = new URLSearchParams({
+      action,
+      callback: cb,
+      evaluatorName: EVALUATOR_NAME,
+      ...payload
     });
 
-    s.src=WEB_APP_URL+"?"+p.toString();
-    document.body.appendChild(s);
+    script.src = WEB_APP_URL + "?" + params.toString();
+    document.body.appendChild(script);
   });
 }
 
-// ================= LOAD =================
-window.onload=loadData;
+// ================= INIT =================
+window.onload = loadEmployees;
 
-async function loadData(){
-  const res=await api("init",{evaluatorName:EVALUATOR_NAME});
-  employees=res.employees||[];
-  renderEmployeeList();
+async function loadEmployees() {
+  document.getElementById("app").innerHTML = "<div class='card'>Loading...</div>";
+
+  const res = await api("init");
+
+  employees = res.employees || [];
+
+  renderList();
 }
 
 // ================= LIST =================
-function renderEmployeeList(){
-  let html=`
+function renderList() {
+  let html = `
     <div class="card">
-      <h3 class="section-title">รายการรอประเมิน</h3>
-      <div class="grid">
-        <div class="box">รอประเมิน: ${employees.length}</div>
-        <div class="box">ผู้ประเมิน: ${EVALUATOR_NAME}</div>
-        <div class="box">สถานะ: พร้อมใช้งาน</div>
-      </div>
+      <h3>ผู้ประเมิน</h3>
+      ${EVALUATOR_NAME}
+    </div>
+
+    <div class="card">
+      <button onclick="loadEmployees()">📋 รายชื่อ</button>
+      <button onclick="loadDashboard()">📊 Dashboard</button>
     </div>
   `;
 
-  employees.forEach((e,i)=>{
-    html+=`
-      <div class="card emp" onclick="openForm(${i})">
+  if (employees.length === 0) {
+    html += `<div class="card">ไม่มีข้อมูล</div>`;
+    document.getElementById("app").innerHTML = html;
+    return;
+  }
+
+  employees.forEach((e, i) => {
+    html += `
+      <div class="card employee" onclick="openForm(${i})">
         <b>${e.employee}</b><br>
         ${e.employeePosition} | ${e.bu}
       </div>
     `;
   });
 
-  document.getElementById("app").innerHTML=html;
+  document.getElementById("app").innerHTML = html;
 }
 
 // ================= FORM =================
-async function openForm(i){
-  selected=employees[i];
-  const res=await api("getForm",{employeeData:selected});
-  questions=res.questions||[];
+async function openForm(i) {
+  selected = employees[i];
 
-  let html=`
+  document.getElementById("app").innerHTML = "<div class='card'>Loading form...</div>";
+
+  const res = await api("getForm", {
+    employeeData: JSON.stringify(selected)
+  });
+
+  questions = res.questions || [];
+
+  renderForm();
+}
+
+function renderForm() {
+
+  let html = `
     <div class="card">
       <h3>${selected.employee}</h3>
+      ${selected.employeePosition} | ${selected.bu}
     </div>
   `;
 
-  questions.forEach((q,idx)=>{
-    html+=`
-      <div class="q">
+  if (questions.length === 0) {
+    html += `<div class="card">ไม่พบคำถาม</div>
+    <button onclick="loadEmployees()">กลับ</button>`;
+    document.getElementById("app").innerHTML = html;
+    return;
+  }
+
+  questions.forEach((q, i) => {
+    html += `
+      <div class="card">
         <b>${q.coreValue}</b><br>
         ${q.checklist}<br><br>
 
-        ${[1,2,3,4,5].map(s=>`
+        ${[1,2,3,4,5].map(s => `
           <label>
-            <input type="radio" name="q${idx}" value="${s}"> ${s}
+            <input type="radio" name="q${i}" value="${s}"> ${s}
           </label>
         `).join("")}
 
-        <textarea id="n${idx}" placeholder="หมายเหตุ"></textarea>
+        <textarea id="n${i}" placeholder="หมายเหตุ"></textarea>
       </div>
     `;
   });
 
-  html+=`
+  html += `
     <button onclick="submit()">ส่งผล</button>
-    <button class="gray" onclick="renderEmployeeList()">กลับ</button>
+    <button class="gray" onclick="loadEmployees()">กลับ</button>
   `;
 
-  document.getElementById("app").innerHTML=html;
+  document.getElementById("app").innerHTML = html;
 }
 
 // ================= SUBMIT =================
-async function submit(){
-  let answers=[];
+async function submit() {
 
-  for(let i=0;i<questions.length;i++){
-    let s=document.querySelector(`input[name="q${i}"]:checked`);
-    if(!s){alert("กรุณาให้คะแนนครบ");return;}
+  const answers = [];
+
+  for (let i = 0; i < questions.length; i++) {
+
+    const s = document.querySelector(`input[name="q${i}"]:checked`);
+
+    if (!s) {
+      alert("กรุณาให้คะแนนให้ครบ");
+      return;
+    }
 
     answers.push({
       ...questions[i],
-      score:s.value,
-      note:document.getElementById("n"+i).value
+      score: s.value,
+      note: document.getElementById("n" + i).value
     });
   }
 
-  await api("submit",{payload:{
-    evaluator:EVALUATOR_NAME,
-    employee:selected.employee,
-    answers
-  }});
+  document.getElementById("app").innerHTML = "<div class='card'>Saving...</div>";
 
-  alert("บันทึกแล้ว");
-  loadData();
+  await api("submit", {
+    payload: JSON.stringify({
+      evaluator: EVALUATOR_NAME,
+      employee: selected.employee,
+      employeePosition: selected.employeePosition,
+      bu: selected.bu,
+      answers
+    })
+  });
+
+  alert("บันทึกสำเร็จ");
+  loadEmployees();
 }
 
 // ================= DASHBOARD =================
-async function loadDashboard(){
-  const res=await api("getOverview",{evaluatorName:EVALUATOR_NAME});
+async function loadDashboard() {
 
-  let html=`
+  document.getElementById("app").innerHTML = "<div class='card'>Loading dashboard...</div>";
+
+  const res = await api("getOverview", {
+    evaluatorName: EVALUATOR_NAME
+  });
+
+  renderDashboard(res);
+}
+
+// ================= DASHBOARD RENDER =================
+function renderDashboard(data) {
+
+  const individual = data.individual || [];
+  const benchmark = data.benchmark || [];
+
+  let html = `
     <div class="card">
       <h3>📊 Dashboard</h3>
 
-      <div class="grid">
-        <div class="box">ประเมินแล้ว: ${res.totalEvaluated}</div>
-        <div class="box">คะแนนเฉลี่ย: ${res.avgScore}</div>
-        <div class="box">พนักงาน: ${res.totalEmployees}</div>
+      <div>
+        <b>ประเมินแล้ว:</b> ${data.totalEvaluated || 0}<br>
+        <b>คะแนนเฉลี่ย:</b> ${(data.avgScore || 0).toFixed(2)}<br>
+        <b>พนักงาน:</b> ${data.totalEmployees || 0}
       </div>
     </div>
 
     <div class="card">
-      <h3>Distribution</h3>
-      <canvas id="c1"></canvas>
+      <h3>👤 Top 10</h3>
+  `;
+
+  individual
+    .sort((a,b)=>b.avgScore-a.avgScore)
+    .slice(0,10)
+    .forEach(e=>{
+      html += `
+        <div class="card">
+          <b>${e.employee}</b><br>
+          ${e.position}<br>
+          ⭐ ${e.avgScore.toFixed(2)}
+        </div>
+      `;
+    });
+
+  html += `
     </div>
 
     <div class="card">
-      <h3>ตำแหน่ง</h3>
-      <canvas id="c2"></canvas>
+      <h3>🏢 Position Chart</h3>
+      <canvas id="chart"></canvas>
     </div>
+
+    <button onclick="renderList()">กลับ</button>
   `;
 
-  document.getElementById("app").innerHTML=html;
+  document.getElementById("app").innerHTML = html;
 
-  new Chart(document.getElementById("c1"),{
-    type:"bar",
-    data:{
-      labels:["1","2","3","4","5"],
-      datasets:[{data:res.scoreDistribution}]
-    }
-  });
-
-  new Chart(document.getElementById("c2"),{
-    type:"bar",
-    data:{
-      labels:res.positionLabels,
-      datasets:[{data:res.positionAvg}]
+  new Chart(document.getElementById("chart"), {
+    type: "bar",
+    data: {
+      labels: benchmark.map(b => b.position),
+      datasets: [{
+        label: "Avg Score",
+        data: benchmark.map(b => b.avgScore)
+      }]
     }
   });
 }
 
-// ================= PDF =================
-function exportPDF(){
-  html2pdf().from(document.body).save();
-}
 </script>
 
 </body>
