@@ -71,6 +71,9 @@
 
     .btn.gray { background: #64748b; }
 
+    /* ======================
+       SCORE FIX (1 → 5 left to right)
+    ====================== */
     .score {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -79,20 +82,51 @@
     }
 
     .score label {
-      display: block;
-      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       padding: 10px;
       border-radius: 10px;
       border: 1px solid #ddd;
       cursor: pointer;
       font-weight: bold;
+      transition: 0.2s;
+      user-select: none;
     }
 
-    .score input { display: none; }
+    .score input {
+      display: none;
+    }
 
-    .score input:checked + label {
-      background: #173b6c;
-      color: white;
+    /* LEFT → RIGHT ORDER (1 worst → 5 best) */
+    .score input[value="1"]:checked + label { background: #dc2626; color: white; }
+    .score input[value="2"]:checked + label { background: #ea580c; color: white; }
+    .score input[value="3"]:checked + label { background: #d97706; color: white; }
+    .score input[value="4"]:checked + label { background: #65a30d; color: white; }
+    .score input[value="5"]:checked + label { background: #16a34a; color: white; }
+
+    textarea {
+      width: 100%;
+      min-height: 60px;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      resize: vertical;
+    }
+
+    /* ======================
+       FIX TEXT OVERFLOW
+    ====================== */
+    .card, .box {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      line-height: 1.5;
+    }
+
+    .question {
+      font-weight: 600;
+      margin: 8px 0;
     }
   </style>
 </head>
@@ -110,9 +144,9 @@
 
 <script>
 
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby-T2AJE7CFzCAuZgGqo_cIHdkmoW7HGocKNyH6xvyTUKg4fZ5ulNhBTX-br4WMWOc4uQ/exec"; // <<<<<< ใส่ของคุณตรงนี้
-let EVALUATOR_NAME = "";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby6NWH7qal1TvzcE4kK8D21ia_h3WWptA0oN5SXngb42IKfploqx4fmZpSKb829ZzdyRQ/exec";
 
+let EVALUATOR_NAME = "";
 let employees = [];
 let selected = null;
 let questions = [];
@@ -155,7 +189,6 @@ function api(action, payload = {}) {
     });
 
     script.src = WEB_APP_URL + "?" + params.toString();
-
     script.onerror = () => reject("API error");
 
     document.body.appendChild(script);
@@ -163,15 +196,28 @@ function api(action, payload = {}) {
 }
 
 /* =========================
-   LOAD DATA
+   LOAD DATA (FIX SAFE)
 ========================= */
 async function loadData() {
-  const res = await api("init");
+  try {
+    const res = await api("init");
+    dashboard = await api("dashboard");
 
-  employees = res.employees || [];
-  dashboard = await api("dashboard");
+    employees = res.employees || [];
 
-  renderHome();
+    // FIX: กัน null crash
+    dashboard = dashboard || {
+      individual: [],
+      benchmark: [],
+      buSummary: []
+    };
+
+    renderHome();
+
+  } catch (err) {
+    document.getElementById("app").innerHTML =
+      `<div class="card">โหลดข้อมูลไม่สำเร็จ</div>`;
+  }
 }
 
 /* =========================
@@ -186,17 +232,19 @@ function renderHome() {
       <div class="grid">
         <div class="box">
           <b>Overall Avg</b><br>
-          ${dashboard.overall?.average?.toFixed(2) || 0}
+          ${(dashboard.individual?.length
+            ? (dashboard.individual.reduce((a,b)=>a+b.avgScore,0)/dashboard.individual.length).toFixed(2)
+            : 0)}
         </div>
 
         <div class="box">
           <b>Employees</b><br>
-          ${dashboard.overall?.employeeCount || 0}
+          ${dashboard.individual?.length || 0}
         </div>
 
         <div class="box">
           <b>Total Answers</b><br>
-          ${dashboard.overall?.questionCount || 0}
+          ${dashboard.rawCount || 0}
         </div>
       </div>
     </div>
@@ -214,43 +262,13 @@ function renderHome() {
     `;
   });
 
-  html += `
-    </div>
-
-    <div class="card">
-      <div class="section-title">📈 Benchmark (Position)</div>
-  `;
-
-  (dashboard.benchmark || []).forEach(b => {
-    html += `
-      <div class="box">
-        ${b.position} → ${b.avgScore.toFixed(2)}
-      </div>
-    `;
-  });
-
-  html += `
-    </div>
-
-    <div class="card">
-      <div class="section-title">🏢 BU Overview</div>
-  `;
-
-  (dashboard.buSummary || []).forEach(b => {
-    html += `
-      <div class="box">
-        ${b.bu} → ${b.avgScore.toFixed(2)}
-      </div>
-    `;
-  });
-
   html += `</div>`;
 
   document.getElementById("app").innerHTML = html;
 }
 
 /* =========================
-   OPEN FORM
+   FORM
 ========================= */
 async function openForm(i) {
   selected = employees[i];
@@ -268,11 +286,12 @@ async function openForm(i) {
   questions.forEach((q, i) => {
     html += `
       <div class="card">
-        <b>${q.coreValue}</b><br>
-        ${q.checklist}<br><br>
+        <div><b>${q.coreValue}</b></div>
+
+        <div class="question">${q.checklist}</div>
 
         <div class="score">
-          ${[5,4,3,2,1].map(s => `
+          ${[1,2,3,4,5].map(s => `
             <div>
               <input type="radio" id="s${i}_${s}" name="q${i}" value="${s}">
               <label for="s${i}_${s}">${s}</label>
@@ -280,7 +299,7 @@ async function openForm(i) {
           `).join("")}
         </div>
 
-        <textarea id="n${i}" placeholder="note"></textarea>
+        <textarea id="n${i}" placeholder="หมายเหตุ"></textarea>
       </div>
     `;
   });
@@ -301,8 +320,8 @@ async function submit() {
   const answers = [];
 
   for (let i=0;i<questions.length;i++) {
-    let score = document.querySelector(`input[name=q${i}]:checked`);
-    if (!score) return alert("missing score");
+    const score = document.querySelector(`input[name=q${i}]:checked`);
+    if (!score) return alert("กรุณาให้คะแนนให้ครบ");
 
     answers.push({
       ...questions[i],
@@ -322,7 +341,7 @@ async function submit() {
     }
   });
 
-  alert("saved");
+  alert("บันทึกสำเร็จ");
   loadData();
 }
 
