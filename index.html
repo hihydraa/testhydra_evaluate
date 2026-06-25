@@ -6,345 +6,756 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
+    :root {
+      --blue: #173b6c;
+      --blue2: #244a83;
+      --bg: #f4f6f9;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --card: #ffffff;
+      --line: #e5e7eb;
+
+      --s5: #16a34a;
+      --s4: #65a30d;
+      --s3: #d97706;
+      --s2: #ea580c;
+      --s1: #dc2626;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f4f6f9;
-      color: #1f2937;
-      padding: 20px;
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+      color: var(--text);
+      padding: 24px;
     }
 
-    .wrap { max-width: 1100px; margin: auto; }
+    .wrap {
+      max-width: 1120px;
+      margin: auto;
+    }
 
     .head {
-      background: #173b6c;
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
       color: white;
-      padding: 20px;
-      border-radius: 16px;
-      margin-bottom: 15px;
+      padding: 28px;
+      border-radius: 22px;
+      box-shadow: 0 12px 28px rgba(23,59,108,.22);
+      margin-bottom: 18px;
+    }
+
+    .head h2 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      letter-spacing: .2px;
+    }
+
+    .head div {
+      opacity: .95;
+      font-weight: 600;
     }
 
     .card {
-      background: white;
-      padding: 18px;
-      border-radius: 14px;
-      margin: 12px 0;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      background: var(--card);
+      padding: 20px;
+      border-radius: 18px;
+      margin: 16px 0;
+      box-shadow: 0 8px 22px rgba(15,23,42,.08);
+      border: 1px solid rgba(226,232,240,.9);
+    }
+
+    .section-title {
+      font-size: 20px;
+      margin: 0 0 14px;
+      color: var(--blue);
     }
 
     .emp {
       cursor: pointer;
-      border-left: 6px solid #173b6c;
+      border-left: 7px solid var(--blue);
+      transition: .18s ease;
     }
 
     .emp:hover {
-      background: #eef5ff;
+      transform: translateY(-2px);
+      background: #f1f7ff;
+      box-shadow: 0 12px 28px rgba(23,59,108,.14);
     }
 
-    .section-title {
-      font-size: 18px;
-      font-weight: bold;
-      margin: 10px 0;
+    .employee-name {
+      margin: 0 0 8px;
+      font-size: 21px;
+      color: var(--blue);
     }
 
-    .grid {
+    .info-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      gap: 12px;
     }
 
-    .box {
+    .info-box {
       background: #f8fafc;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #e5e7eb;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
     }
 
-    .btn {
-      background: #173b6c;
-      color: white;
-      border: 0;
-      padding: 10px 14px;
-      border-radius: 10px;
-      cursor: pointer;
+    .info-label {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 4px;
     }
 
-    .btn.gray { background: #64748b; }
+    .info-value {
+      font-weight: 700;
+      color: var(--text);
+    }
 
-    /* ======================
-       SCORE FIX (1 → 5 left to right)
-    ====================== */
+    .guide-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .score-visual {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  overflow: visible;
+}
+
+.score-guide {
+  border-radius: 16px;
+  padding: 14px;
+  color: #111827;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-shadow: 0 8px 16px rgba(15,23,42,.10);
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.score-guide .num {
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.score-guide .name {
+  font-weight: 900;
+  margin: 0 0 8px;
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.score-guide .desc {
+  font-size: 12px;
+  line-height: 1.45;
+  opacity: 1;
+}
+
+.s5 { background: #dcfce7; border: 2px solid var(--s5); }
+.s4 { background: #ecfccb; border: 2px solid var(--s4); }
+.s3 { background: #fef3c7; border: 2px solid var(--s3); }
+.s2 { background: #ffedd5; border: 2px solid var(--s2); }
+.s1 { background: #fee2e2; border: 2px solid var(--s1); }
+
+    .score-guide .num {
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .score-guide .name {
+      font-weight: 800;
+      margin: 8px 0 4px;
+    }
+
+    .score-guide .desc {
+      font-size: 13px;
+      line-height: 1.45;
+      opacity: .96;
+    }
+
+    .heart-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .heart-item {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      background: #fbfdff;
+    }
+
+    .heart-name {
+      color: var(--blue);
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .heart-meaning {
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .heart-method {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .q {
+      background: white;
+      padding: 20px;
+      border-radius: 18px;
+      margin: 16px 0;
+      border: 1px solid var(--line);
+      box-shadow: 0 6px 18px rgba(15,23,42,.06);
+    }
+
+    .q-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .core {
+      display: inline-flex;
+      align-items: center;
+      background: #eaf2ff;
+      color: var(--blue);
+      font-weight: 800;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+    }
+
+    .q-no {
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .question-text {
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .meta {
+      font-size: 14px;
+      color: #4b5563;
+      margin-top: 10px;
+      line-height: 1.6;
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px dashed #cbd5e1;
+    }
+
     .score {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-      margin-top: 10px;
+      gap: 10px;
+      margin-top: 16px;
     }
 
-    .score label {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #ddd;
+    .score-option {
       cursor: pointer;
-      font-weight: bold;
-      transition: 0.2s;
-      user-select: none;
     }
 
-    .score input {
+    .score-option input {
       display: none;
     }
 
-    /* LEFT → RIGHT ORDER (1 worst → 5 best) */
-    .score input[value="1"]:checked + label { background: #dc2626; color: white; }
-    .score input[value="2"]:checked + label { background: #ea580c; color: white; }
-    .score input[value="3"]:checked + label { background: #d97706; color: white; }
-    .score input[value="4"]:checked + label { background: #65a30d; color: white; }
-    .score input[value="5"]:checked + label { background: #16a34a; color: white; }
+    .score-pill {
+      display: block;
+      text-align: center;
+      padding: 12px 8px;
+      border-radius: 14px;
+      border: 2px solid var(--line);
+      background: #ffffff;
+      font-weight: 800;
+      transition: .18s ease;
+    }
+
+    .score-option input:checked + .score-pill {
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(15,23,42,.18);
+    }
+
+    .score-option input[value="5"]:checked + .score-pill { background: var(--s5); border-color: var(--s5); }
+    .score-option input[value="4"]:checked + .score-pill { background: var(--s4); border-color: var(--s4); }
+    .score-option input[value="3"]:checked + .score-pill { background: var(--s3); border-color: var(--s3); }
+    .score-option input[value="2"]:checked + .score-pill { background: var(--s2); border-color: var(--s2); }
+    .score-option input[value="1"]:checked + .score-pill { background: var(--s1); border-color: var(--s1); }
 
     textarea {
       width: 100%;
-      min-height: 60px;
-      margin-top: 10px;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #ddd;
+      min-height: 70px;
+      margin-top: 14px;
+      border-radius: 14px;
+      border: 1px solid #cbd5e1;
+      padding: 12px;
+      font-family: Arial, sans-serif;
       resize: vertical;
+      outline: none;
     }
 
-    /* ======================
-       FIX TEXT OVERFLOW
-    ====================== */
-    .card, .box {
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      line-height: 1.5;
+    textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(23,59,108,.12);
     }
 
-    .question {
-      font-weight: 600;
-      margin: 8px 0;
+    button {
+      background: var(--blue);
+      color: white;
+      border: 0;
+      padding: 13px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 15px;
+      box-shadow: 0 8px 18px rgba(23,59,108,.18);
+    }
+
+    button.gray {
+      background: #64748b;
+    }
+
+    button:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 32px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    @media (max-width: 800px) {
+      body { padding: 14px; }
+      .head { padding: 22px; border-radius: 18px; }
+      .head h2 { font-size: 22px; }
+      .score-visual { grid-template-columns: 1fr; }
+      .heart-grid { grid-template-columns: 1fr; }
+      .score { grid-template-columns: repeat(3, 1fr); }
+      .info-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 
 <body>
 <div class="wrap">
-
   <div class="head">
-    <h2>K.C. HEART Evaluation System</h2>
-    <div id="userInfo">ผู้ประเมิน: -</div>
+    <h2>K.C. HEART Core Value Evaluation</h2>
+    <div>ผู้ประเมิน: สุชานรี กองพลพรหม</div>
   </div>
 
   <div id="app"></div>
 </div>
 
 <script>
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby6NWH7qal1TvzcE4kK8D21ia_h3WWptA0oN5SXngb42IKfploqx4fmZpSKb829ZzdyRQ/exec';
+const EVALUATOR_NAME = 'สุชานรี กองพลพรหม';
 
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby6NWH7qal1TvzcE4kK8D21ia_h3WWptA0oN5SXngb42IKfploqx4fmZpSKb829ZzdyRQ/exec";
-
-let EVALUATOR_NAME = "";
 let employees = [];
-let selected = null;
+let selectedEmployee = null;
 let questions = [];
-let dashboard = null;
+let scoreGuide = [];
+let submitting = false;
 
-/* =========================
-   INIT
-========================= */
-window.onload = () => {
-  const url = new URLSearchParams(window.location.search);
-  EVALUATOR_NAME = url.get("evaluator") || "สุชานรี กองพลพรหม";
+const defaultScoreGuide = [
+  { score: 5, meaning: 'ดีเยี่ยม / เป็นแบบอย่าง', description: 'ปฏิบัติสม่ำเสมอ มีหลักฐานชัดเจน และเป็นตัวอย่างให้ผู้อื่น' },
+  { score: 4, meaning: 'ดี / ผ่านมาตรฐาน', description: 'ปฏิบัติได้ดี มีหลักฐานสนับสนุน ไม่มีประเด็นสำคัญ' },
+  { score: 3, meaning: 'พอใช้ / เฝ้าระวัง', description: 'ปฏิบัติได้บางส่วน แต่ยังไม่สม่ำเสมอหรือหลักฐานไม่ครบ' },
+  { score: 2, meaning: 'ต้องปรับปรุง', description: 'พบข้อบกพร่องชัดเจน ต้องมีแผนแก้ไข' },
+  { score: 1, meaning: 'ไม่ปฏิบัติ / เสี่ยงสูง', description: 'ไม่พบการปฏิบัติ หรือพบพฤติกรรมขัดกับ Core Value' }
+];
 
-  document.getElementById("userInfo").innerText =
-    "ผู้ประเมิน: " + EVALUATOR_NAME;
+const heartGuide = [
+  { name: 'Hospitality', meaning: 'บริการด้วยความจริงใจ', method: 'ดูวิธีสื่อสาร การรับฟัง การช่วยเหลือ และ Feedback' },
+  { name: 'Excellence', meaning: 'มุ่งมั่นสู่ความเป็นเลิศทุกด้าน', method: 'ดูความถูกต้อง มาตรฐาน รายละเอียด และการปรับปรุงงาน' },
+  { name: 'Accountability', meaning: 'รักษามาตรฐานสูงสุด', method: 'ดูงานค้าง การติดตาม การรายงาน และการรับผิดชอบข้อผิดพลาด' },
+  { name: 'Responsibility', meaning: 'รับผิดชอบผลลัพธ์', method: 'ดูวินัย ความปลอดภัย การรักษาความลับ และทรัพย์สินบริษัท' },
+  { name: 'Teamwork', meaning: 'ทำงานเป็นทีม', method: 'ดูการประสานงาน ช่วยเหลือทีม และงานข้ามฝ่าย' }
+];
 
-  loadData();
+window.onload = async function () {
+  await loadData();
 };
 
-/* =========================
-   API
-========================= */
-function api(action, payload = {}) {
-  const cb = "cb_" + Date.now();
+function showLoading(text) {
+  document.getElementById('app').innerHTML = `<div class="card loading">${text}</div>`;
+}
 
+function showError(error) {
+  document.getElementById('app').innerHTML = `
+    <div class="card">
+      <h3>เกิดข้อผิดพลาด</h3>
+      <div>${error}</div>
+      <br>
+      <button onclick="loadData()">ลองใหม่</button>
+    </div>
+  `;
+}
+
+function api(action, payload = {}) {
   return new Promise((resolve, reject) => {
-    window[cb] = (res) => {
-      resolve(res);
-      delete window[cb];
+    const callbackName =
+      'jsonpCallback_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+
+    const script = document.createElement('script');
+
+    const timer = setTimeout(() => {
+      reject(new Error('Apps Script ไม่ตอบกลับ กรุณาตรวจ Web App URL / สิทธิ์ Anyone with the link / Deploy New version'));
+      delete window[callbackName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }, 15000);
+
+    window[callbackName] = function(data) {
+      clearTimeout(timer);
+      resolve(data);
+      delete window[callbackName];
+      if (script.parentNode) script.parentNode.removeChild(script);
     };
 
-    const script = document.createElement("script");
-
     const params = new URLSearchParams();
-    params.append("action", action);
-    params.append("callback", cb);
-    params.append("evaluatorName", EVALUATOR_NAME);
+    params.set('action', action);
+    params.set('callback', callbackName);
 
-    Object.keys(payload).forEach(k => {
-      params.append(k, JSON.stringify(payload[k]));
+    Object.keys(payload).forEach(key => {
+      if (typeof payload[key] === 'object') {
+        params.set(key, JSON.stringify(payload[key]));
+      } else {
+        params.set(key, payload[key]);
+      }
     });
 
-    script.src = WEB_APP_URL + "?" + params.toString();
-    script.onerror = () => reject("API error");
+    script.src = WEB_APP_URL + '?' + params.toString();
+
+    script.onerror = function() {
+      clearTimeout(timer);
+      reject(new Error('โหลดข้อมูลจาก Apps Script ไม่สำเร็จ'));
+      delete window[callbackName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+    };
 
     document.body.appendChild(script);
   });
 }
 
-/* =========================
-   LOAD DATA (FIX SAFE)
-========================= */
+async function apiPost(action, payload = {}) {
+  await fetch(WEB_APP_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    body: JSON.stringify({
+      action,
+      ...payload
+    })
+  });
+
+  return {
+    success: true,
+    message: 'บันทึกผลการประเมินเรียบร้อยแล้ว'
+  };
+}
+
 async function loadData() {
   try {
-    const res = await api("init");
-    dashboard = await api("dashboard");
+    showLoading('กำลังโหลดรายชื่อพนักงานที่รอประเมิน...');
 
-    employees = res.employees || [];
+    const result = await api('init', {
+      evaluatorName: EVALUATOR_NAME
+    });
 
-    // FIX: กัน null crash
-    dashboard = dashboard || {
-      individual: [],
-      benchmark: [],
-      buSummary: []
-    };
+    if (!result.success) {
+      throw new Error(result.message || 'โหลดข้อมูลไม่สำเร็จ');
+    }
 
-    renderHome();
+    employees = result.employees || [];
+    scoreGuide = result.scoreGuide && result.scoreGuide.length ? result.scoreGuide : defaultScoreGuide;
+
+    renderEmployeeList();
 
   } catch (err) {
-    document.getElementById("app").innerHTML =
-      `<div class="card">โหลดข้อมูลไม่สำเร็จ</div>`;
+    showError(err.message || err);
   }
 }
 
-/* =========================
-   HOME
-========================= */
-function renderHome() {
+function renderGuideBoxes() {
+  const sortedScore = [...scoreGuide].sort((a, b) => Number(b.score) - Number(a.score));
 
-  let html = `
+  let scoreHtml = `
     <div class="card">
-      <div class="section-title">📊 Dashboard Summary</div>
-
-      <div class="grid">
-        <div class="box">
-          <b>Overall Avg</b><br>
-          ${(dashboard.individual?.length
-            ? (dashboard.individual.reduce((a,b)=>a+b.avgScore,0)/dashboard.individual.length).toFixed(2)
-            : 0)}
-        </div>
-
-        <div class="box">
-          <b>Employees</b><br>
-          ${dashboard.individual?.length || 0}
-        </div>
-
-        <div class="box">
-          <b>Total Answers</b><br>
-          ${dashboard.rawCount || 0}
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="section-title">👤 รายชื่อรอประเมิน</div>
+      <h3 class="section-title">เกณฑ์การให้คะแนน</h3>
+      <div class="score-visual">
   `;
 
-  employees.forEach((e,i) => {
-    html += `
-      <div class="card emp" onclick="openForm(${i})">
-        <b>${e.employee}</b><br>
-        ${e.employeePosition} | ${e.bu}
+  sortedScore.forEach(g => {
+    scoreHtml += `
+      <div class="score-guide s${g.score}">
+        <div>
+          <div class="num">${g.score}</div>
+          <div class="name">${g.meaning}</div>
+        </div>
+        <div class="desc">${g.description}</div>
       </div>
     `;
   });
 
-  html += `</div>`;
-
-  document.getElementById("app").innerHTML = html;
-}
-
-/* =========================
-   FORM
-========================= */
-async function openForm(i) {
-  selected = employees[i];
-  const res = await api("getForm", { employeeData: selected });
-
-  questions = res.questions || [];
-
-  let html = `
-    <div class="card">
-      <b>${selected.employee}</b><br>
-      ${selected.employeePosition} | ${selected.bu}
+  scoreHtml += `
+      </div>
     </div>
   `;
 
+  let heartHtml = `
+    <div class="card">
+      <h3 class="section-title">HEART การประเมิน</h3>
+      <div class="heart-grid">
+  `;
+
+  heartGuide.forEach(h => {
+    heartHtml += `
+      <div class="heart-item">
+        <div class="heart-name">${h.name}</div>
+        <div class="heart-meaning">${h.meaning}</div>
+        <div class="heart-method">${h.method}</div>
+      </div>
+    `;
+  });
+
+  heartHtml += `
+      </div>
+    </div>
+  `;
+
+  return scoreHtml + heartHtml;
+}
+
+function renderEmployeeList() {
+  const app = document.getElementById('app');
+
+  let html = `
+    <div class="card">
+      <h3 class="section-title">รายการรอประเมิน</h3>
+      <div class="info-grid">
+        <div class="info-box">
+          <div class="info-label">ผู้ประเมิน</div>
+          <div class="info-value">${EVALUATOR_NAME}</div>
+        </div>
+        <div class="info-box">
+          <div class="info-label">จำนวนที่รอประเมิน</div>
+          <div class="info-value">${employees.length} คน</div>
+        </div>
+        <div class="info-box">
+          <div class="info-label">สถานะ</div>
+          <div class="info-value">พร้อมประเมิน</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  if (employees.length === 0) {
+    html += `<div class="card">ไม่มีรายชื่อพนักงานที่รอประเมิน</div>`;
+    app.innerHTML = html;
+    return;
+  }
+
+  html += `<h3 class="section-title">รายชื่อพนักงานที่ยังไม่ประเมิน</h3>`;
+
+  employees.forEach((emp, i) => {
+    html += `
+      <div class="card emp" onclick="openForm(${i})">
+        <h3 class="employee-name">${emp.employee}</h3>
+        <div class="info-grid">
+          <div class="info-box">
+            <div class="info-label">ตำแหน่ง</div>
+            <div class="info-value">${emp.employeePosition}</div>
+          </div>
+          <div class="info-box">
+            <div class="info-label">สังกัด</div>
+            <div class="info-value">${emp.bu}</div>
+          </div>
+          <div class="info-box">
+            <div class="info-label">สถานะ</div>
+            <div class="info-value">รอประเมิน</div>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  app.innerHTML = html;
+}
+
+async function openForm(index) {
+  try {
+    selectedEmployee = employees[index];
+    showLoading('กำลังโหลดแบบประเมิน...');
+
+    const result = await api('getForm', {
+      employeeData: selectedEmployee
+    });
+
+    if (!result.success) {
+      throw new Error(result.message || 'โหลดแบบประเมินไม่สำเร็จ');
+    }
+
+    questions = result.questions || [];
+    renderForm();
+
+  } catch (err) {
+    showError(err.message || err);
+  }
+}
+
+function renderForm() {
+  const app = document.getElementById('app');
+
+  let html = `
+    <div class="card">
+      <h3 class="section-title">แบบประเมิน: ${selectedEmployee.employee}</h3>
+      <div class="info-grid">
+        <div class="info-box">
+          <div class="info-label">ตำแหน่ง</div>
+          <div class="info-value">${selectedEmployee.employeePosition}</div>
+        </div>
+        <div class="info-box">
+          <div class="info-label">สังกัด</div>
+          <div class="info-value">${selectedEmployee.bu}</div>
+        </div>
+        <div class="info-box">
+          <div class="info-label">จำนวนข้อประเมิน</div>
+          <div class="info-value">${questions.length} ข้อ</div>
+        </div>
+      </div>
+    </div>
+
+    ${renderGuideBoxes()}
+  `;
+
+  if (questions.length === 0) {
+    html += `
+      <div class="card">ไม่พบคำถามของตำแหน่งนี้ในชีท ${selectedEmployee.bu}</div>
+      <div class="action-row">
+        <button class="gray" onclick="renderEmployeeList()">กลับ</button>
+      </div>
+    `;
+    app.innerHTML = html;
+    return;
+  }
+
   questions.forEach((q, i) => {
     html += `
-      <div class="card">
-        <div><b>${q.coreValue}</b></div>
+      <div class="q">
+        <div class="q-top">
+          <div class="core">${q.coreValue}</div>
+          <div class="q-no">ข้อที่ ${i + 1}</div>
+        </div>
 
-        <div class="question">${q.checklist}</div>
+        <div class="question-text">${q.checklist}</div>
+
+        <div class="meta">
+          <b>หลักฐานที่ใช้ตรวจ:</b> ${q.evidence || '-'}<br>
+          <b>วิธีตรวจสอบ:</b> ${q.method || '-'}
+        </div>
 
         <div class="score">
           ${[1,2,3,4,5].map(s => `
-            <div>
-              <input type="radio" id="s${i}_${s}" name="q${i}" value="${s}">
-              <label for="s${i}_${s}">${s}</label>
-            </div>
-          `).join("")}
+            <label class="score-option">
+              <input type="radio" name="score_${i}" value="${s}">
+              <span class="score-pill">${s}</span>
+            </label>
+          `).join('')}
         </div>
 
-        <textarea id="n${i}" placeholder="หมายเหตุ"></textarea>
+        <textarea id="note_${i}" placeholder="หมายเหตุเพิ่มเติม เช่น หลักฐานที่พบ / ข้อสังเกต"></textarea>
       </div>
     `;
   });
 
   html += `
-    <button class="btn" onclick="submit()">Submit</button>
-    <button class="btn gray" onclick="loadData()">Back</button>
+    <div class="action-row">
+      <button class="gray" onclick="renderEmployeeList()">กลับ</button>
+      <button id="submitBtn" onclick="submitEvaluation()">ส่งผลประเมิน</button>
+    </div>
   `;
 
-  document.getElementById("app").innerHTML = html;
+  app.innerHTML = html;
 }
 
-/* =========================
-   SUBMIT
-========================= */
-async function submit() {
+async function submitEvaluation() {
+  if (submitting) return;
 
-  const answers = [];
+  try {
+    const answers = [];
 
-  for (let i=0;i<questions.length;i++) {
-    const score = document.querySelector(`input[name=q${i}]:checked`);
-    if (!score) return alert("กรุณาให้คะแนนให้ครบ");
+    for (let i = 0; i < questions.length; i++) {
+      const checked = document.querySelector(`input[name="score_${i}"]:checked`);
 
-    answers.push({
-      ...questions[i],
-      score: score.value,
-      note: document.getElementById("n"+i).value
-    });
-  }
+      if (!checked) {
+        alert(`กรุณาให้คะแนนข้อที่ ${i + 1}`);
+        return;
+      }
 
-  await api("submit", {
-    payload: {
-      evaluator: EVALUATOR_NAME,
-      evaluatorPosition: "",
-      employee: selected.employee,
-      employeePosition: selected.employeePosition,
-      bu: selected.bu,
-      answers
+      const q = questions[i];
+
+      answers.push({
+        ...q,
+        score: checked.value,
+        note: document.getElementById(`note_${i}`).value
+      });
     }
-  });
 
-  alert("บันทึกสำเร็จ");
-  loadData();
+    const payload = {
+      evaluator: selectedEmployee.evaluator,
+      evaluatorPosition: selectedEmployee.evaluatorPosition,
+      employee: selectedEmployee.employee,
+      employeePosition: selectedEmployee.employeePosition,
+      bu: selectedEmployee.bu,
+      answers
+    };
+
+    submitting = true;
+    const btn = document.getElementById('submitBtn');
+    if (btn) btn.disabled = true;
+
+    showLoading('กำลังบันทึกผลการประเมิน...');
+
+    await apiPost('submit', { payload });
+
+    alert('บันทึกผลการประเมินเรียบร้อยแล้ว');
+
+    submitting = false;
+    await loadData();
+
+  } catch (err) {
+    submitting = false;
+    showError(err.message || err);
+  }
 }
-
 </script>
 </body>
 </html>
