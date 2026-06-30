@@ -4,8 +4,10 @@
   <meta charset="UTF-8">
   <title>K.C. HEART Evaluation</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <style>
+    html { color-scheme: light only; }
     :root {
       --blue: #173b6c; --blue2: #244a83; --blue3: #1e4d99;
       --text: #1f2937; --muted: #6b7280; --card: #fff; --line: #e5e7eb;
@@ -193,7 +195,7 @@ const defaultGuide = [
 
 const heartGuide = [
   {name:'Hospitality', meaning:'บริการด้วยความจริงใจ', method:'ดูวิธีสื่อสาร การรับฟัง การช่วยเหลือ และ Feedback'},
-  {name:'Excellence', meaning:'มุ่งมั่นสู่ความเป็นเลิศทุกด้าน', method:'ดูความถูกต้อง มาตรฐาน รายละเอียด และการปรับปรุงงาน'},
+  {name:'Excellence', meaning:'มุ่งมั่งสู่ความเป็นเลิศทุกด้าน', method:'ดูความถูกต้อง มาตรฐาน รายละเอียด และการปรับปรุงงาน'},
   {name:'Accountability', meaning:'รักษามาตรฐานสูงสุด', method:'ดูงานค้าง การติดตาม การรายงาน และการรับผิดชอบข้อผิดพลาด'},
   {name:'Responsibility', meaning:'รับผิดชอบผลลัพธ์', method:'ดูวินัย ความปลอดภัย การรักษาความลับ และทรัพย์สินบริษัท'},
   {name:'Teamwork', meaning:'ทำงานเป็นทีม', method:'ดูการประสานงาน ช่วยเหลือทีม และงานข้ามฝ่าย'}
@@ -378,7 +380,7 @@ function renderForm(){
     <div class="card">
       <h3 class="section-title">HEART การประเมิน</h3>
       <div class="heart-grid">
-        ${heartGuide.map(h=>`<div class="heart-item"><div class="heart-name">${h.name}</div><div class="heart-meaning">${h.meaning}</div><div class="heart-method">${h.method}</div></div>`).join('')}
+        ${heartGuide.map(hg=>`<div class="heart-item"><div class="heart-name">${hg.name}</div><div class="heart-meaning">${hg.meaning}</div><div class="heart-method">${hg.method}</div></div>`).join('')}
       </div>
     </div>`;
 
