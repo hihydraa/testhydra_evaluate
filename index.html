@@ -376,12 +376,6 @@ function renderForm(){
       <div class="score-visual">
         ${guide.map(g=>`<div class="score-guide s${g.score}"><div><div class="num">${g.score}</div><div class="name">${g.meaning}</div></div><div class="desc">${g.description}</div></div>`).join('')}
       </div>
-    </div>
-    <div class="card">
-      <h3 class="section-title">HEART การประเมิน</h3>
-      <div class="heart-grid">
-        ${heartGuide.map(hg=>`<div class="heart-item"><div class="heart-name">${hg.name}</div><div class="heart-meaning">${hg.meaning}</div><div class="heart-method">${hg.method}</div></div>`).join('')}
-      </div>
     </div>`;
 
   if(!questions.length){
